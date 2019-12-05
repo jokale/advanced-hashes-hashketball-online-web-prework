@@ -115,7 +115,7 @@ def game_hash
     }
   }
   
-  return hash 
+  return hashgame 
 end
 
  
