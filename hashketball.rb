@@ -1,6 +1,6 @@
 
 def game_hash
-  hashgame ={  :away => {
+  hashgame = {  :away => {
           :team_name => "Charlotte Hornets",
       :colors => ["Turquoise", "Purple"],
       :players => [
