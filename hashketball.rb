@@ -117,3 +117,173 @@ def game_hash
   
 
 end
+def num_points_scored(player_name)
+  game_hash.each { |team_key, team_value|
+      #print "Team key:"
+      #pp(team_key)
+      #print "Team value:"
+      #pp(team_value)
+    team_value[:players].each { |player|
+      if player[:player_name] == player_name
+        player[:points].to_i
+        return player[:points]
+      end
+    }
+  }
+end
+
+def shoe_size(player_name)
+  playas = get_all_players(game_hash)
+  my_guy = get_player_in_array_by_name(player_name, playas)
+  my_guy[:shoe]
+end
+
+def get_all_players(game) #returns AoH's of all players in the game
+  result = []
+    game.each { |home_or_away, team|
+      team[:players].each { |player_hash|
+        result.push(player_hash)
+      }
+    }
+  #puts "All player hashes: #{result}"
+  result
+end
+
+def get_player_in_array_by_name(player_name, player_array) # retreives player hash from AoH
+  player_array.each { |player|
+    #puts player[:player_name]
+    if player[:player_name] == player_name
+      #puts player[:player_name]
+      return player
+    end
+  }
+  puts "Player not found"
+  nil
+end
+
+def team_colors(team_name)
+  get_team(team_name, game_hash)[:colors]
+end
+
+def get_team(team_name, hash) # returns specified team hash
+  hash.each{ |team_key, team_val|
+    if team_val[:team_name] == team_name
+      puts
+      return team_val
+    end
+  }
+  puts "Team not found."
+  nil
+end
+
+def team_names
+  result = []
+  game_hash.each { |team_key, team_val|
+    result.push(team_val[:team_name])
+  }
+  result
+end
+
+def player_numbers(team_name)
+  result = []
+    team_players = get_team(team_name, game_hash)[:players]
+    team_players.each { |player|
+      result.push(player[:number])
+    }
+    result
+end
+
+def player_stats(player_name)
+  player = get_player_in_array_by_name(player_name, get_all_players(game_hash)).tap{|h| h.delete(:player_name)}
+end
+
+def big_shoe_rebounds
+  players = get_all_players(game_hash)
+  #puts "All players:"
+  #puts players
+  big_shoe_guy = players.reduce{ |memo, player|
+      if player[:shoe] > memo[:shoe]
+        memo = player
+      end
+      memo
+      }
+  puts big_shoe_guy[:rebounds]
+  big_shoe_guy[:rebounds]
+end
+
+def most_points_scored
+  players = get_all_players(game_hash)
+  players.reduce{ |memo, player|
+    if player[:points] > memo[:points]
+      memo = player
+    end
+    memo
+  }[:player_name].to_s
+end
+
+def winning_team
+  home_score = get_team_total(game_hash[:home][:team_name])
+  away_score = get_team_total(game_hash[:away][:team_name])
+  if home_score > away_score
+    return game_hash[:home][:team_name].to_s
+  else
+    return game_hash[:away][:team_name].to_s
+  end
+end
+
+def get_teams
+
+  game_hash.each{ |team, value|
+
+  }
+end
+
+def get_team_total(team)
+  t = get_team(team, game_hash)
+  team_total = t[:players].reduce(0){ |sum, player|
+    sum = sum + player[:points]
+    sum
+  }
+  team_total
+end
+
+def player_with_longest_name
+  players = get_all_players(game_hash)
+  #puts "Players: #{players}"
+  longest_name = players.reduce(){ |memo, player|
+    puts "Memo: #{memo}"
+    puts "Player: #{player}"
+    puts "Comparing #{player[:player_name]} and #{memo[:player_name]}"
+    if player[:player_name].length > memo[:player_name].length
+
+      memo = player
+    end
+    memo
+  }[:player_name].to_s
+end
+
+def long_name_steals_a_ton?
+  long_name = player_with_longest_name
+  steals = most_steals[:player_name]
+
+  puts "longest name = #{long_name}"
+  puts "most steals: #{steals}"
+  if long_name == steals
+    return true
+  end
+  false
+end
+
+def most_steals
+  players = get_all_players(game_hash)
+  players.reduce{ |memo, player|
+    if memo == nil
+      memo = player
+    end
+    if player[:steals] > memo[:steals]
+      memo = player
+    end
+    memo
+  }
+end
+
